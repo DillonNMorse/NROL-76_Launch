@@ -6,8 +6,7 @@ Created on Thu Jul 16 13:32:33 2020
 """
 
 from Digit_Retrieve import Retrieve_Digit
-import keras
-
+import numpy as np
 
 # =============================================================================
 # Wrapper function which is called to scrape data from a frame.
@@ -30,25 +29,32 @@ def Read_Digit(Frame_num, model):
     for i, image in enumerate(Image):
         x = image.reshape(1, img_rows, img_cols, 1)
         Images.append(x)
-    
-    # =========================================================================
-    # Pass each image to the classifier
-    # =========================================================================
-    speed_ones_digit  =  model.predict( Images[0] ).argmax()
-    speed_tens_digit  =  model.predict( Images[1] ).argmax()
-    speed_hunds_digit =  model.predict( Images[2] ).argmax()
-    speed_thous_digit =  model.predict( Images[3] ).argmax()
-    dist_ones_digit   =  model.predict( Images[4] ).argmax()
-    dist_tens_digit   =  model.predict( Images[5] ).argmax()
-    dist_hunds_digit  =  model.predict( Images[6] ).argmax()        
         
     # =========================================================================
-    # Clear memory - improves runtime
-    # =========================================================================  
-    keras.backend.clear_session()
+    # Stack all image arrays in to a single array, then cut out the extra 
+    # dimension (using squeeze). This allows all 7 predictions to be handed to
+    # the classifier simultaneously - improves runtime
+    # =========================================================================
+    Images = np.array(Images)   
+    im = np.squeeze(Images, axis = 1)
+
+
     
-    return (speed_ones_digit, speed_tens_digit, speed_hunds_digit, speed_thous_digit,
-            dist_ones_digit, dist_tens_digit, dist_hunds_digit )
+    # =========================================================================
+    # Pass images to the classifier, select digit with largest probability
+    # =========================================================================
+
+    pred  =  model.predict( im ).argmax(axis=1)
+
+    return pred 
+
+# =============================================================================
+#  Order of outputs:  ( speed_ones_digit, speed_tens_digit, speed_hunds_digit, 
+#                       speed_thous_digit, dist_ones_digit,  dist_tens_digit,
+#                        dist_hunds_digit )
+# =============================================================================
+
+
 
   
  
@@ -56,7 +62,7 @@ def Read_Digit(Frame_num, model):
 # To test the functionality of this function.
 # =============================================================================
 # from keras.models import load_model
-# model = load_model("test_model.h5")
+# model =load_model("test_model.h5")
 # 
 # frame = '01891'
 # 
@@ -66,6 +72,7 @@ def Read_Digit(Frame_num, model):
 # print( Read_Digit(frame, model) )
 # 
 # end = time.time()
+# keras.backend.clear_session()
 # 
 # print('This operation took {:.3f} seconds'.format(end-begin))
 # =============================================================================
