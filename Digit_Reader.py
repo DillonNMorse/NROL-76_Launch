@@ -15,19 +15,26 @@ from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 
 #import cv2 as cv
 import numpy as np
-#import matplotlib.pyplot as plt
 import pickle
 from sklearn.model_selection import train_test_split
 import random
 
 keras.backend.clear_session()
 
-
+# =============================================================================
+# Import training data
+# =============================================================================
 filename = 'Labeled_Digits'
 infile = open(filename, 'rb')
 X, y = pickle.load(infile)
 infile.close()
 
+# =============================================================================
+# The training data has unbalanced classes (many more 1's and 0's than other
+# digits), find the digit with the smallest number of occurences and use that
+# to set min_count. Then randomly select min_count number of training data
+# points for use in actually training the classifier.
+# =============================================================================
 y = [int(j) for j in y] 
 counts = {k : y.count(k) for k in set(y) }
 min_count = counts[ min(counts.keys(), key=(lambda k: counts[k])) ]
@@ -42,19 +49,23 @@ for digit in np.arange(10):
 
 X = np.array(X)
 y = np.array(y)
-
 X_balanced = np.array(X_balanced)
 y_balanced = np.array(y_balanced)
 
 
-x_train, x_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=0.20)
-#x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+# =============================================================================
+# Perform train/test splits
+# =============================================================================
+x_train, x_test, y_train, y_test = train_test_split(X_balanced,
+                                                    y_balanced,
+                                                    test_size=0.20)
 
 
 
-# If using the MNIST data - found that it didn't work well because handwritten
+# If using the MNIST data.  Found that it didn't work well because handwritten
 # 1's don't have the same shape as the 1's here.
 #
+# x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
 # =============================================================================
 # (x_train, y_train), (x_test, y_test) = mnist.load_data()
 # 
@@ -70,7 +81,9 @@ x_train, x_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test
 
 
 
-
+# =============================================================================
+# Reshape  and re-scale arrays appropriately
+# =============================================================================
 img_rows = X[0].shape[0] # 28
 img_cols = X[0].shape[1] # 28
 
@@ -80,11 +93,16 @@ x_test    = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
 x_train = x_train/255
 x_test = x_test/255
 
-
+# =============================================================================
+# One-hot-encode the target values
+# =============================================================================
 num_classes = 10
 y_train = to_categorical(y_train, num_classes)
 y_test   = to_categorical(y_test, num_classes)
 
+# =============================================================================
+# Build classifier
+# =============================================================================
 model = Sequential()
 model.add(Conv2D(32,
                  kernel_size = (3,3),
@@ -109,6 +127,9 @@ model.compile(loss = 'categorical_crossentropy',
 batch_size = 128
 epochs = 10
 
+# =============================================================================
+# Train classifier
+# =============================================================================
 model.fit(x_train, y_train,
           batch_size = batch_size,
           epochs = epochs,
@@ -118,5 +139,9 @@ score = model.evaluate(x_test, y_test, verbose = 0)
 
 print('Test loss: {:.3f}'.format(score[0]))
 print('Test accuracy: {:.3f}'.format(score[1]))
+
+# =============================================================================
+# Save classifier for later use
+# =============================================================================
 model.save('test_model.h5')
     
