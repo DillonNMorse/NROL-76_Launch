@@ -27,7 +27,7 @@ for j, frame in enumerate(Frames):
 # =============================================================================
 # Set number of frames which will be labelled. Randomly select that amount.
 # =============================================================================
-num_to_label = 30
+num_to_label = 60
 sub_Frames = random.choices(Frames, k = num_to_label)
 
 # =============================================================================
