@@ -93,4 +93,4 @@ with tf.Session(config = config) as sess:
 # =============================================================================
 # Save to csv file
 # =============================================================================
-df.to_csv('Telemtry_Data.csv')
+df.to_csv('Telemetry_Data.csv')
