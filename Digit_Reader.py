@@ -8,16 +8,17 @@ Created on Thu Jul 16 09:42:00 2020
 # Based on the tuorial at: https://www.sitepoint.com/keras-digit-recognition-tutorial/
 
 import keras
-from keras.datasets import mnist
+#from keras.datasets import mnist
 from keras.utils import to_categorical
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 
-import cv2 as cv
+#import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import pickle
 from sklearn.model_selection import train_test_split
+import random
 
 keras.backend.clear_session()
 
@@ -27,10 +28,27 @@ infile = open(filename, 'rb')
 X, y = pickle.load(infile)
 infile.close()
 
+y = [int(j) for j in y] 
+counts = {k : y.count(k) for k in set(y) }
+min_count = counts[ min(counts.keys(), key=(lambda k: counts[k])) ]
+
+X_balanced = []
+y_balanced = []
+
+for digit in np.arange(10):
+    bins = random.choices( list(np.arange(counts[ digit ])) , k = min_count )
+    X_balanced = X_balanced + list( np.array( [ X[j] for j in np.arange(len(y)) if y[j] == digit] )[bins] )
+    y_balanced = y_balanced + ( [digit]*min_count )
+
 X = np.array(X)
 y = np.array(y)
 
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+X_balanced = np.array(X_balanced)
+y_balanced = np.array(y_balanced)
+
+
+x_train, x_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=0.20)
+#x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
 
 
 
