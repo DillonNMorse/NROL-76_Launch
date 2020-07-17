@@ -13,22 +13,48 @@ from keras.utils import to_categorical
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 
+import cv2 as cv
+import numpy as np
 import matplotlib.pyplot as plt
+import pickle
+from sklearn.model_selection import train_test_split
 
 keras.backend.clear_session()
 
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
 
+filename = 'Labeled_Digits'
+infile = open(filename, 'rb')
+X, y = pickle.load(infile)
+infile.close()
+
+X = np.array(X)
+y = np.array(y)
+
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+
+
+
+# If using the MNIST data - found that it didn't work well because handwritten
+# 1's don't have the same shape as the 1's here.
+#
 # =============================================================================
-# image_index = 22
-# print(y_train[image_index])
-# plt.imshow(x_train[image_index], cmap = 'Greys')
-# plt.show()
+# (x_train, y_train), (x_test, y_test) = mnist.load_data()
+# 
+# # Can apply thresholding - haven't trained yet with it.
+# # =============================================================================
+# # for k in np.arange( x_train.shape[0] ):
+# #     x_train[k,:,:] = cv.threshold(x_train[k,:,:] , 100/255, 255, cv.THRESH_BINARY)[1]
+# # for j in np.arange( x_test.shape[0] ):
+# #     x_test[j,:,:] = cv.threshold(x_test[j,:,:] , 100/255, 255, cv.THRESH_BINARY)[1]
+# # =============================================================================
 # =============================================================================
 
 
-img_rows = 28
-img_cols = 28
+
+
+
+img_rows = X[0].shape[0] # 28
+img_cols = X[0].shape[1] # 28
 
 x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
 x_test    = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
@@ -59,7 +85,7 @@ model.add(Dense(num_classes,
                 activation = 'softmax'))
 
 model.compile(loss = 'categorical_crossentropy',
-             optimizer = 'adam',
+             optimizer = keras.optimizers.Adadelta(), #'adam',
              metrics = ['accuracy'])
 
 batch_size = 128
