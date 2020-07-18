@@ -7,6 +7,8 @@ Created on Fri Jul 17 13:20:58 2020
 
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
+
 import numpy as np
 import findiff as fd
 from scipy.signal import savgol_filter
@@ -64,25 +66,75 @@ Time_coord = np.arange(0, len(telemetry.index)*(1/k), (1/k))
 
 
 # =============================================================================
-# Make plot
+# Make plot for Speed and Altitude
 # =============================================================================
-fig, ( (ax1, ax2, ax5), (ax3, ax4, ax6) ) = plt.subplots(2,3)
+fig, axes_1 = plt.subplots(2,1)
+
+( ax1, ax2 ) = axes_1
+
 ax1.plot(Time_coord, Speed )
 ax1.set_ylabel('Total Speed (km/s)')
-ax3.plot(Time_coord, Alt )
-ax3.set_xlabel('time (seconds)') 
-ax3.set_ylabel('Altitude (km)')
-
-ax2.plot(Time_coord, dAlt_dt)
-ax2.set_ylabel('Vertical Speed (km/s)')
-ax4.plot(Time_coord, dX_dt )
-ax4.set_ylabel('Horizontal Speed (km/s)')
-
-ax5.plot(Time_coord, d2Alt_dt2)
-ax5.plot(Time_coord, [-9.8/1]*len(Time_coord), 'r--')
-ax5.set_ylabel('Vertical Acceleration (m/s/s)')
-ax6.plot(Time_coord, dX2_dt2)
-ax6.set_ylabel('Horizontal Acceleration (m/s/s)')
+ax2.plot(Time_coord, Alt )
+ax2.set_ylabel('Altitude (km)')
 
 
 
+ax_list = fig.axes
+ml = MultipleLocator(60)
+for ax in ax_list:
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.xaxis.set_minor_locator(ml)
+plt.tight_layout()
+
+fig.text(0.5, -0.02, 'Time Since Launch (minutes)', ha='center')
+
+plt.setp(axes_1,
+         xticks = np.arange(0,Time_coord[-1], 180),
+         xticklabels = [0, 3, 6, 9])
+
+plt.savefig('NROL-76_Telemetry_Information.jpeg',
+            dpi = 100,
+            bbox_inches = 'tight',
+            transparent = True)
+plt.show()
+
+
+
+
+# =============================================================================
+# Make plot for Speed and Acceleration
+# =============================================================================
+fig, axes_2 = plt.subplots(2,2)
+
+( (ax1, ax2), (ax3, ax4) ) = axes_2
+
+ax1.plot(Time_coord, dAlt_dt)
+ax1.set_ylabel('Speed (km/s)')
+ax1.set_title('Vertical Motion')
+ax2.plot(Time_coord, dX_dt )
+ax2.set_title('Horizontal Motion')
+
+ax3.plot(Time_coord, d2Alt_dt2)
+ax3.plot(Time_coord, [-9.8/1]*len(Time_coord), 'r--')
+ax3.set_ylabel('Acccel. (m/s/s)')
+ax4.plot(Time_coord, dX2_dt2)
+
+ax_list = fig.axes
+for ax in ax_list:
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.xaxis.set_minor_locator(ml)
+plt.tight_layout()
+
+fig.text(0.5, -0.02, 'Time Since Launch (minutes)', ha='center')
+
+plt.setp(axes_2,
+         xticks = np.arange(0, Time_coord[-1], 180),
+         xticklabels = [0, 3, 6, 9] )
+
+plt.savefig('NROL-76_Speed_and_Accel.jpeg',
+            dpi = 100,
+            bbox_inches = 'tight',
+            transparent = True)
+plt.show()
