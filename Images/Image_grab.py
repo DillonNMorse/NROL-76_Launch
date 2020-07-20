@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib import patches
 
 
+
 Frame_num = '00493'
 image = io.imread( 'vid{}.jpg'.format(Frame_num) )
 #image = rgb2gray(image)
@@ -75,3 +76,5 @@ plt.savefig('NROL-76_Velocity.jpeg',
 
 
 plt.show()
+
+
