@@ -107,22 +107,50 @@ def Retrieve_Digit(Frame_num):
 
 # =============================================================================
 # Test functionality
-# =============================================================================
-# frame = '04693'
-# (speed_ones_digit, speed_tens_digit, speed_hunds_digit, speed_thous_digit,
-#             dist_ones_digit, dist_tens_digit, dist_hunds_digit ) = Retrieve_Digit( frame )
-# 
-# from matplotlib import pyplot as plt
-# fig, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2,4)
-# 
-# ax1.imshow( speed_thous_digit)
-# ax2.imshow( speed_hunds_digit)
-# ax3.imshow( speed_tens_digit)
-# ax4.imshow( speed_ones_digit)
-# 
-# ax5.imshow( dist_hunds_digit)
-# ax6.imshow( dist_tens_digit )
-# ax7.imshow( dist_ones_digit )
-# 
-# plt.show()
-# =============================================================================
+frame = '00493'
+(speed_ones_digit, speed_tens_digit, speed_hunds_digit, speed_thous_digit,
+            dist_ones_digit, dist_tens_digit, dist_hunds_digit ) = Retrieve_Digit( frame )
+
+from matplotlib import pyplot as plt
+fig, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2,4)
+
+ax1.imshow( speed_thous_digit)
+ax2.imshow( speed_hunds_digit)
+ax3.imshow( speed_tens_digit)
+ax4.imshow( speed_ones_digit)
+
+ax5.imshow( dist_hunds_digit)
+ax6.imshow( dist_tens_digit )
+ax7.imshow( dist_ones_digit )
+
+plt.show()
+
+
+
+fig, ax = plt.subplots(1,4)
+((ax1, ax2, ax3, ax4)) = ax
+ax1.imshow( speed_thous_digit)
+ax2.imshow( speed_hunds_digit)
+ax3.imshow( speed_tens_digit)
+ax4.imshow( speed_ones_digit)
+
+for axes in ax:
+    axes.spines['top'].set_visible(False)
+    axes.spines['right'].set_visible(False)
+    axes.spines['left'].set_visible(False)
+    axes.spines['bottom'].set_visible(False)
+    plt.setp(axes,
+             xticks = [],
+             xticklabels = [],
+             yticks = [],
+             yticklabels = [])
+    
+plt.savefig('Images/NROL-76_Velocity_Processed.jpeg',
+            dpi = 200,
+            bbox_inches = 'tight',
+            transparent = True)   
+plt.show()
+
+
+
+
