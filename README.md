@@ -1,6 +1,6 @@
 # NROL-76_Launch
 
- Data scraped from SpaceX's [NROL-76 launch YouTube video](https://youtu.be/EzQpkQ1etdA?t=707) using a convolutional neural network built x	using TensorFlow to classify digits from the individual still frames which are pre-processed using OpenCV. The altitude, velocity, and acceleration are tracked from launch to landing. During periods where the engines are not firing the vertical component of acceleration is found to be consistent with expectations due to gravity, thereby confirming that this launch did in fact occur on Earth.
+ Data scraped from SpaceX's [NROL-76 launch YouTube video](https://youtu.be/EzQpkQ1etdA?t=707) using a convolutional neural network built	using TensorFlow to classify digits from the individual still frames which are pre-processed using OpenCV. The altitude, velocity, and acceleration are tracked from launch to landing. During periods where the engines are not firing the vertical component of acceleration is found to be consistent with expectations due to gravity, thereby confirming that this launch did in fact occur on Earth.
 
 # The Process
 
